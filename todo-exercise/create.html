@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create User</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <a href="index.html">HOME</a>
+    </header>
+    <main>
+      <h1>Create Todo</h1>
+      <form onsubmit="handleSubmit(event);">
+        <label for="todo-name">User Id</label>
+        <input type="text" id="todo-name" name="userId" />
+
+        <label for="todo-title">To Do Title</label>
+        <input type="text" id="todo-title" name="title" />
+
+        <label for="completion">Completed?</label>
+        <input type="text" id="completion" name="completed" />
+
+        <button type="submit">Create</button>
+      </form>
+    </main>
+    <script>
+      function handleSubmit(event) {
+        event.preventDefault();
+
+        let form = event.target;
+        let formData = new FormData(form);
+        let todo = Object.fromEntries(formData.entries());
+
+        fetch("http://localhost:3000/todos", {
+          method: "POST",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify(todo),
+        })
+          .then(function (response) {
+            console.log(response.status, response.statusText);
+            return response.json();
+          })
+          .then(function (todo) {
+            console.log(todo);
+            window.location.replace("index.html");
+          });
+      }
+    </script>
+  </body>
+</html>
