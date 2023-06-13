@@ -11,10 +11,5 @@ fetch("http://localhost:3000/todos", {
   headers: { "Content-type": "application/json" },
   body: newTodoAsJSON,
 })
-  .then(function (response) {
-    console.log(response.status, response.statusText);
-    return response.json();
-  })
-  .then(function displayData(bodyData) {
-    console.log(bodyData);
-  });
+  .then((response) => response.json())
+  .then((bodyData) => console.log(bodyData));
