@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todos</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
+    />
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <h1>Todos</h1>
+      <a href="create.html">Add +</a>
+      <table>
+        <thead>
+          <th>UserId</th>
+          <th>Title</th>
+          <th>Completed?</th>
+          <th></th>
+        </thead>
+        <tbody id="todo-info-tbody"></tbody>
+      </table>
+    </main>
+    <footer></footer>
+    <script>
+      "use strict";
+
+      const todoInfoTbody = document.querySelector("#todo-info-tbody");
+
+      window.onload = function fetchTodos() {
+        fetch("http://localhost:3000/todos")
+          .then((response) => response.json())
+          .then((todos) => todos.forEach(buildTodoTableRow));
+      };
+
+      function buildTodoTableRow(todo) {
+        const row = todoInfoTbody.insertRow(-1);
+        const deleteLink = document.createElement("a");
+        deleteLink.textContent = "Delete";
+        deleteLink.onclick = () => deleteTodo(todo);
+
+        row.insertCell(0).textContent = todo.userId;
+        row.insertCell(1).textContent = todo.title;
+        row.insertCell(2).textContent = todo.completed;
+        row.insertCell(3).appendChild(deleteLink);
+        todoInfoTbody.appendChild(row);
+      }
+
+      function deleteTodo(todo) {
+        fetch(`http://localhost:3000/todos/${todo.id}`, {
+          method: "DELETE",
+        }).then(() => window.location.reload());
+      }
+    </script>
+  </body>
+</html>
