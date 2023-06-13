@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
+    />
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <h1>Users</h1>
+      <a href="create.html">Add +</a>
+      <table>
+        <thead>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Company Name</th>
+        </thead>
+        <tbody id="user-info-tbody"></tbody>
+      </table>
+    </main>
+    <footer></footer>
+
+    <script>
+      "use strict";
+
+      const userInfoTbody = document.querySelector("#user-info-tbody");
+
+      window.onload = function fetchUsers() {
+        fetch("http://localhost:3000/users")
+          .then((response) => response.json())
+          .then((users) => users.forEach(buildUserTableRow));
+      };
+
+      function buildUserTableRow(user) {
+        const row = userInfoTbody.insertRow(-1);
+
+        row.insertCell(0).textContent = user.name;
+        row.insertCell(1).textContent = user.username;
+        row.insertCell(2).textContent = user.email;
+        row.insertCell(3).textContent = user.phone;
+        if (user.company) {
+          row.insertCell(4).textContent = user.company.name;
+        } else {
+          row.insertCell(4);
+        }
+        userInfoTbody.appendChild(row);
+      }
+    </script>
+  </body>
+</html>
