@@ -16,9 +16,10 @@
       <a href="create.html">Add +</a>
       <table>
         <thead>
-          <th>UserId</th>
+          <th>User Id</th>
           <th>Title</th>
           <th>Completed?</th>
+          <th></th>
           <th></th>
         </thead>
         <tbody id="todo-info-tbody"></tbody>
@@ -38,21 +39,30 @@
 
       function buildTodoTableRow(todo) {
         const row = todoInfoTbody.insertRow(-1);
+
         const deleteLink = document.createElement("a");
         deleteLink.textContent = "Delete";
         deleteLink.onclick = () => deleteTodo(todo);
+
+        const editLink = document.createElement("a");
+        editLink.href = `edit.html?todoId=${todo.id}`;
+        editLink.textContent = "Edit";
 
         row.insertCell(0).textContent = todo.userId;
         row.insertCell(1).textContent = todo.title;
         row.insertCell(2).textContent = todo.completed;
         row.insertCell(3).appendChild(deleteLink);
+        row.insertCell(4).appendChild(editLink);
         todoInfoTbody.appendChild(row);
       }
 
       function deleteTodo(todo) {
-        fetch(`http://localhost:3000/todos/${todo.id}`, {
-          method: "DELETE",
-        }).then(() => window.location.reload());
+        let ask = confirm("Are you sure you want to delete this entry?");
+        if (ask) {
+          fetch(`http://localhost:3000/todos/${todo.id}`, {
+            method: "DELETE",
+          }).then(() => window.location.reload());
+        }
       }
     </script>
   </body>
