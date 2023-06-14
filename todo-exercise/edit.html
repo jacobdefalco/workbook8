@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Todo</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.classless.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <a href="index.html">HOME</a>
+    </header>
+    <main>
+      <h1>Edit</h1>
+      <form>
+        <label for="todo-userid">User Id</label>
+        <input type="text" id="todo-userid" name="userId" />
+
+        <label for="todo-title">To Do Title</label>
+        <input type="text" id="todo-title" name="title" />
+
+        <label for="completion">Completed?</label>
+        <input type="text" id="completion" name="completed" />
+
+        <button type="submit" onclick="handleSubmit(event)">Edit</button>
+      </form>
+    </main>
+    <footer></footer>
+    <script>
+      const nameInput = document.querySelector("#todo-userid");
+      const todoTitleInput = document.querySelector("#todo-title");
+      const completionInput = document.querySelector("#completion");
+
+      window.onload = function loadPage() {
+        const searchParameters = new URLSearchParams(window.location.search);
+        if (!searchParameters.has("todoId")) {
+          throw new Error("No To do ID Provided");
+        }
+        const todoId = searchParameters.get("todoId");
+        fetch(`http://localhost:3000/todos/${todoId}`)
+          .then(function (response) {
+            console.log(response.status, response.statusText);
+            return response.json();
+          })
+          .then((data) => {
+            nameInput.value = data.userId;
+            todoTitleInput.value = data.title;
+            completionInput.value = data.completed;
+          });
+      };
+
+      function handleSubmit(event) {
+        event.preventDefault();
+        const searchParameters = new URLSearchParams(window.location.search);
+        if (!searchParameters.has("todoId")) {
+          throw new Error("No To do ID Provided");
+        }
+
+        const todoId = searchParameters.get("todoId");
+
+        let newTodo = {
+          userId: nameInput.value,
+          title: todoTitleInput.value,
+          completed: completionInput.value,
+        };
+
+        let newTodoAsJSON = JSON.stringify(newTodo);
+
+        fetch(`http://localhost:3000/todos/${todoId}`, {
+          method: "PUT",
+          headers: { "Content-type": "application/json" },
+          body: newTodoAsJSON,
+        }).then(function () {
+          window.location.replace("index.html");
+        });
+      }
+    </script>
+  </body>
+</html>
